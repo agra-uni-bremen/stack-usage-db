@@ -60,7 +60,7 @@ usage(char *prog)
 }
 
 static char *
-src2su(const char *src)
+src2su(const char *symbol, const char *src)
 {
 	static char dest[PATH_MAX + 2]; /* +2 for null byte and newline */
 	char *newline;
@@ -84,7 +84,11 @@ src2su(const char *src)
 		dup(p[1]);
 		close(p[1]);
 
-		execl(cmd, cmd, src, (char*)NULL);
+		if (src)
+			execl(cmd, cmd, symbol, src, (char*)NULL);
+		else
+			execl(cmd, cmd, symbol, (char*)NULL);
+
 		err(EXIT_FAILURE, "execlp failed");
 	case -1:
 		err(EXIT_FAILURE, "fork failed");
@@ -112,15 +116,14 @@ src2su(const char *src)
 }
 
 static char *
-getsufp(GElf_Addr addr)
+getsufp(const char *name, GElf_Addr addr)
 {
 	const char *srcfp;
 
-	/* TODO: Implement this using libdwfl (see comment in dwarf.c) */
-	if (!(srcfp = dwarf_get_src(elf, addr)))
-		return NULL;
+	/* TODO: Implement this with libdwfl (see comment in dwarf.c) */
+	srcfp = dwarf_get_src(elf, addr); /* may be NULL */
 
-	return src2su(srcfp);
+	return src2su(name, srcfp);
 }
 
 static char *
@@ -220,7 +223,7 @@ printdb(FILE *out, Dwfl *dwfl, int fd)
 		if (!name || GELF_ST_TYPE(sym.st_info) != STT_FUNC)
 			continue; /* not a function symbol */
 
-		if (!(sufp = getsufp(addr))) {
+		if (!(sufp = getsufp(name, addr))) {
 			warnx("no line information for symbol '%s'", name);
 			continue;
 		}
