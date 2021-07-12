@@ -13,6 +13,9 @@
 #include <string.h>
 #include <unistd.h>
 
+#include <sys/types.h>
+#include <sys/wait.h>
+
 #include <elfutils/libdwfl.h>
 
 #include "dwarf.h"
@@ -61,6 +64,7 @@ src2su(const char *src)
 {
 	static char dest[PATH_MAX + 2]; /* +2 for null byte and newline */
 	char *newline;
+	int wstatus;
 	FILE *out;
 	pid_t pid;
 	int p[2];
@@ -88,6 +92,11 @@ src2su(const char *src)
 		close(p[1]); /* close unused write-end */
 		if (!(out = fdopen(p[0], "r")))
 			err(EXIT_FAILURE, "fdopen failed on pipe");
+
+		if (waitpid(pid, &wstatus, 0) == -1)
+			errx(EXIT_FAILURE, "waitpid failed");
+		if (!WIFEXITED(wstatus) || WEXITSTATUS(wstatus))
+			errx(EXIT_FAILURE, "cmd did not exit with zero");
 
 		if (!fgets(dest, sizeof(dest), out))
 			errx(EXIT_FAILURE, "fgets returned no data");
