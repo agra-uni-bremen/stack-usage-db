@@ -18,9 +18,9 @@ compilation units.
 To resolve the problem outlined above. This tool concatenates multiple
 `-fstack-usage` files into a single file/database. The tool iterates
 over a given ELF file and extracts the source line information for each
-function symbol. The source file path is than passed to a user-supplied
+function symbol. The source file path is then passed to a user-supplied
 script which returns the stack-usage path for a given source file path.
-The stack-usage file is than parsed and the function symbol address is
+The stack-usage file is then parsed and the function symbol address is
 associated with the stack size for this function as determined by the
 stack-usage file.
 
@@ -36,7 +36,7 @@ Afterwards, execute as follows:
 
 	$ ./stack-usage-db /home/soeren/src/riscv-vp/sw/stacksize/main convert.sh
 
-Which will generate the tab-separated following output:
+Which will generate the following tab-separated output:
 
 	65766	main	32
 	65652	myfunc2	48
