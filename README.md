@@ -34,7 +34,7 @@ compiled using:
 
 Afterwards, execute as follows:
 
-	$ ./main /home/soeren/src/riscv-vp/sw/stacksize/main convert.sh
+	$ ./stack-usage-db /home/soeren/src/riscv-vp/sw/stacksize/main convert.sh
 
 Which will generate the tab-separated following output:
 
