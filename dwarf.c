@@ -43,7 +43,7 @@ dwarf_get_src(const char *elf, GElf_Addr addr)
 	int r;
 	FILE *p;
 	size_t cmdlen;
-	char *cmd, *colon;
+	char *ret, *cmd, *colon;
 	static char path[PATH_MAX + 1]; /* +1 for '\0' */
 
 	/* +3 for 2x ' ' and 1x '\0' */
@@ -72,6 +72,12 @@ dwarf_get_src(const char *elf, GElf_Addr addr)
 	else
 		errx(EXIT_FAILURE, "unexpected addr2line output");
 
+	if (!strcmp(path, "??")) {
+		ret = NULL;
+	} else {
+		ret = path;
+	}
+
 	free(cmd);
-	return path;
+	return ret;
 }
