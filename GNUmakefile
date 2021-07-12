@@ -7,4 +7,4 @@ CFLAGS += -Wpedantic -Wall -Wextra \
 CFLAGS += $(shell pkg-config --cflags libdw)
 LDLIBS += $(shell pkg-config --libs libdw)
 
-stack-usage-db: stack-usage-db.c
+stack-usage-db: dwarf.o stack-usage-db.o

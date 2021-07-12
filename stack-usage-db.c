@@ -15,6 +15,8 @@
 
 #include <elfutils/libdwfl.h>
 
+#include "fns.h"
+
 enum {
 	SU_ATTR_STATIC = 0,
 	SU_ATTR_DYNAMIC,
@@ -33,7 +35,8 @@ typedef struct {
 /* reg_t for parsing the regex from above */
 static regex_t sureg;
 
-/* Command used for src2su */
+/* Command-line arguments */
+static char *elf;
 static char *cmd;
 
 /* Taken from elfutils example code. */
@@ -99,16 +102,12 @@ src2su(const char *src)
 }
 
 static char *
-getsufp(Dwfl_Module *mod, GElf_Addr addr)
+getsufp(GElf_Addr addr)
 {
-	Dwfl_Line *line;
 	const char *srcfp;
 
-	line = dwfl_module_getsrc(mod, addr);
-	if (!line)
-		return NULL;
-
-	if (!(srcfp = dwfl_lineinfo(line, NULL, NULL, NULL, NULL, NULL)))
+	/* TODO: Implement this using libdwfl (see comment in dwarf.c) */
+	if (!(srcfp = dwarf_get_src(elf, addr)))
 		return NULL;
 
 	return src2su(srcfp);
@@ -201,7 +200,7 @@ printdb(FILE *out, Dwfl *dwfl, int fd)
 		if (!name || GELF_ST_TYPE(sym.st_info) != STT_FUNC)
 			continue; /* not a function symbol */
 
-		if (!(sufp = getsufp(mod, addr))) {
+		if (!(sufp = getsufp(addr))) {
 			warnx("no line information for symbol '%s'", name);
 			continue;
 		}
@@ -222,7 +221,6 @@ int
 main(int argc, char **argv)
 {
 	int fd;
-	char *elf;
 	Dwfl *dwfl;
 
 	if (regcomp(&sureg, REGEXPR, REG_EXTENDED))
