@@ -107,11 +107,12 @@ src2su(const char *symbol, const char *src)
 		/* TODO: Check that standard out contains no more data */
 		if ((newline = strchr(dest, '\n')))
 			*newline = '\0';
-		if (dest[0] == '\0')
-			return NULL;
 
 		if (fclose(out))
 			err(EXIT_FAILURE, "fclose failed");
+
+		if (dest[0] == '\0')
+			return NULL;
 	}
 
 	return dest;
