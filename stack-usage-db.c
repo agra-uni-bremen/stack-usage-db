@@ -209,7 +209,7 @@ printdb(FILE *out, Dwfl *dwfl, int fd)
 
 		if (!(su.attrs[SU_ATTR_STATIC] || su.attrs[SU_ATTR_BOUNDED]))
 			warnx("function '%s' has an unbounded stack", name);
-		fprintf(out, "%"PRIu64"\t%s\t%zu\n", (uint64_t)addr, name, su.size);
+		fprintf(out, "%"PRIx64"\t%s\t%zu\n", (uint64_t)addr, name, su.size);
 	}
 
 	dwfl_report_end(dwfl, NULL, NULL);

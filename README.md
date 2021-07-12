@@ -40,6 +40,8 @@ Afterwards, execute as follows:
 
 Which will generate the following tab-separated output:
 
-	65766	main	32
-	65652	myfunc2	48
-	65710	myfunc1	32
+	1009c	get_mtime	32
+	10118	get_mtime	16
+	10074	main	32
+	10134	myfunc2	48
+	100e4	myfunc1	32
