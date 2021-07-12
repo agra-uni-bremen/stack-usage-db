@@ -6,8 +6,7 @@
  * reason, this code now uses addr2line(1) from binutils and parses its
  * output.
  *
- * This is horribly inefficient and hacky. Hopefully, someone fixes
- * libdwfl at some point. Should probably create a bugreport. */
+ * See: https://sourceware.org/bugzilla/show_bug.cgi?id=27805 */
 
 #include <err.h>
 #include <inttypes.h>
