@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <ctype.h>
 #include <err.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -57,6 +58,31 @@ usage(char *prog)
 {
 	fprintf(stderr, "USAGE: %s ELF CMD\n", basename(prog));
 	exit(EXIT_FAILURE);
+}
+
+/* For some optimization GCC modifies the symbol name. For instance, it
+ * may add a .isra.[0-9]+ or .constprop.[0-9]+ suffix to the symbol
+ * name. However, the number and the last dot don't seem to be included
+ * in the stack-usage file. For this reason we need to strip them. */
+static char *
+strsuf(const char *str)
+{
+	char *p, *r;
+	size_t nlen;
+
+	if ((p = strstr(str, ".constprop."))) {
+		nlen = (size_t)(p - str) + strlen(".constprop");
+	} else if ((p = strstr(str, ".isra."))) {
+		nlen = (size_t)(p - str) + strlen(".isra");
+	} else {
+		nlen = strlen(str);
+	}
+
+	if (!(r = strndup(str, nlen + 1)))
+		err(EXIT_FAILURE, "strndup");
+	r[nlen] = '\0';
+
+	return r;
 }
 
 static char *
@@ -216,28 +242,33 @@ printdb(FILE *out, Dwfl *dwfl, int fd)
 		errx(EXIT_FAILURE, "dwfl_module_getsymtab failed");
 
 	for (i = 0; i < n; i++) {
+		char *name;
 		stackuse su;
 		GElf_Sym sym;
 		GElf_Addr addr;
-		const char *name;
 		const char *sufp;
+		const char *sname;
 
-		name = dwfl_module_getsym_info(mod, i, &sym, &addr, NULL, NULL, NULL);
+		sname = dwfl_module_getsym_info(mod, i, &sym, &addr, NULL, NULL, NULL);
 		if (!name || GELF_ST_TYPE(sym.st_info) != STT_FUNC)
 			continue; /* not a function symbol */
+		name = strsuf(sname);
 
 		if (!(sufp = getsufp(name, addr))) {
 			warnx("no stack-usage file for symbol '%s' found", name);
-			continue;
+			goto next;
 		}
 		if (!getsu(&su, sufp, name)) {
 			warnx("symbol '%s' not found in stack-usage file '%s'", name, sufp);
-			continue;
+			goto next;
 		}
 
 		if (!(su.attrs[SU_ATTR_STATIC] || su.attrs[SU_ATTR_BOUNDED]))
 			warnx("function '%s' has an unbounded stack", name);
 		fprintf(out, "%"PRIx64"\t%s\t%zu\n", (uint64_t)addr, name, su.size);
+
+next:
+		free(name);
 	}
 
 	dwfl_report_end(dwfl, NULL, NULL);
