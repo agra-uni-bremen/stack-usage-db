@@ -110,6 +110,9 @@ src2su(const char *symbol, const char *src)
 		dup(p[1]);
 		close(p[1]);
 
+		if (setenv("STACK_USAGE_DB_ELF", elf, 1) == -1)
+			err(EXIT_FAILURE, "setenv failed");
+
 		if (src)
 			execl(cmd, cmd, symbol, src, (char*)NULL);
 		else
