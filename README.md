@@ -5,11 +5,11 @@ all function symbols defined in an ELF file.
 
 ## Motivation
 
-Recont versions of GCC allow generating per-function stack usage
+Recent versions of GCC allow generating per-function stack usage
 information using the `-fstack-usage` compiler flag. Unfortunately, gcc
 stores this information on a per compilation-unit basis. This creates
-issue if one considers a linked ELF file and wants to determine the
-stack usage of a given function symbol in this ELF file. As an example,
+issues if one considers a linked ELF file and wants to determine the
+stack usage of a given function symbol in this ELF file. For example,
 static function may be declared with the same name across different
 compilation units.
 
