@@ -227,11 +227,11 @@ printdb(FILE *out, Dwfl *dwfl, int fd)
 			continue; /* not a function symbol */
 
 		if (!(sufp = getsufp(name, addr))) {
-			warnx("no stack usage info for symbol '%s'", name);
+			warnx("no stack-usage file for symbol '%s' found", name);
 			continue;
 		}
 		if (!getsu(&su, sufp, name)) {
-			warnx("stack usage information for symbol '%s' not found", name);
+			warnx("symbol '%s' not found in stack-usage file '%s'", name, sufp);
 			continue;
 		}
 
