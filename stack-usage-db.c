@@ -99,12 +99,15 @@ src2su(const char *src)
 }
 
 static char *
-getsufp(Dwfl *dwfl, GElf_Addr addr)
+getsufp(Dwfl_Module *mod, GElf_Addr addr)
 {
 	Dwfl_Line *line;
 	const char *srcfp;
 
-	line = dwfl_getsrc(dwfl, addr);
+	line = dwfl_module_getsrc(mod, addr);
+	if (!line)
+		return NULL;
+
 	if (!(srcfp = dwfl_lineinfo(line, NULL, NULL, NULL, NULL, NULL)))
 		return NULL;
 
@@ -198,7 +201,7 @@ printdb(FILE *out, Dwfl *dwfl, int fd)
 		if (!name || GELF_ST_TYPE(sym.st_info) != STT_FUNC)
 			continue; /* not a function symbol */
 
-		if (!(sufp = getsufp(dwfl, addr))) {
+		if (!(sufp = getsufp(mod, addr))) {
 			warnx("no line information for symbol '%s'", name);
 			continue;
 		}
