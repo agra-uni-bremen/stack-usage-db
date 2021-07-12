@@ -27,8 +27,9 @@ stack-usage file.
 ## Usage
 
 A sample script is provided in `convert.sh`. This tool requires
-`libdwfl` from [elfutils](https://sourceware.org/elfutils/) and can be
-compiled using:
+`libdwfl` from [elfutils](https://sourceware.org/elfutils/) and
+`addr2line` from [binutils](https://www.gnu.org/software/binutils/). If
+these are installed, compile as follows:
 
 	$ make
 
