@@ -32,9 +32,11 @@ compiled using:
 
 	$ make
 
+Afterwards, compile the example and run `stack-usage-db` as follows:
 Afterwards, execute as follows:
 
-	$ ./stack-usage-db /home/soeren/src/riscv-vp/sw/stacksize/main convert.sh
+	$ make -C ./example
+	$ ./stack-usage-db ./example/main ./convert.sh
 
 Which will generate the following tab-separated output:
 
