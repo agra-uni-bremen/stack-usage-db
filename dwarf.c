@@ -18,7 +18,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "fns.h"
+#include "dwarf.h"
 
 /* Reading dwarf line information shouldn't require a cross-toolchain */
 #define ADDR2LINE "addr2line -e"

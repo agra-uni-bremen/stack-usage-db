@@ -1,5 +1,5 @@
-#ifndef STACK_USAGE_DB_FNS
-#define STACK_USAGE_DB_FNS
+#ifndef STACK_USAGE_DB_DWARF
+#define STACK_USAGE_DB_DWARF
 
 #include <stdint.h>
 

@@ -15,7 +15,7 @@
 
 #include <elfutils/libdwfl.h>
 
-#include "fns.h"
+#include "dwarf.h"
 
 enum {
 	SU_ATTR_STATIC = 0,
