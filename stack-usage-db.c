@@ -91,6 +91,7 @@ src2su(const char *src)
 
 		if (!fgets(dest, sizeof(dest), out))
 			errx(EXIT_FAILURE, "fgets returned no data");
+		/* TODO: Check that standard out contains no more data */
 		if ((newline = strchr(dest, '\n')))
 			*newline = '\0';
 
