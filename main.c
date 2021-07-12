@@ -65,6 +65,11 @@ src2su(const char *src)
 	if (pipe(p))
 		err(EXIT_FAILURE, "pipe failed");
 
+	/* XXX: Instead of forking a new process for each invocation of
+	 * this function it would be more efficient to continously run
+	 * the script in the background, pass source files paths on
+	 * standard input and receive stack-usage paths on standard
+	 * output. Implementing this will result in better performance. */
 	switch ((pid = fork())) {
 	case 0:
 		close(p[0]); /* close unused read-end */
