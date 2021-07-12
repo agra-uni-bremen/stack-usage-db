@@ -153,7 +153,9 @@ getsu(stackuse *out, const char *fp, const char *fn)
 	size_t llen;
 	char *line, *name;
 	unsigned int lnum;
+	stackuse *r;
 
+	r = NULL;
 	if (!(in = fopen(fp, "r")))
 		err(EXIT_FAILURE, "fopen failed for '%s'", fp);
 
@@ -164,16 +166,24 @@ getsu(stackuse *out, const char *fp, const char *fn)
 	while ((n = getline(&line, &llen, in)) > 0) {
 		if (!(name = parsesu(out, line)))
 			errx(EXIT_FAILURE, "%s:%u: malformed input", fp, lnum);
-		if (!strcmp(name, fn))
-			return out;
+
+		if (!strcmp(name, fn)) {
+			r = out;
+			goto ret;
+		}
+
 		lnum++;
 	}
+
+ret:
 	if (ferror(in))
 		errx(EXIT_FAILURE, "ferror failed");
 
 	if (fclose(in))
 		err(EXIT_FAILURE, "fclose failed");
-	return NULL;
+	free(line);
+
+	return r;
 }
 
 static void
