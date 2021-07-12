@@ -227,7 +227,7 @@ printdb(FILE *out, Dwfl *dwfl, int fd)
 			continue; /* not a function symbol */
 
 		if (!(sufp = getsufp(name, addr))) {
-			warnx("no line information for symbol '%s'", name);
+			warnx("no stack usage info for symbol '%s'", name);
 			continue;
 		}
 		if (!getsu(&su, sufp, name)) {
